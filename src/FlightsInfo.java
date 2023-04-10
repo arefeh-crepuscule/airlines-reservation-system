@@ -22,7 +22,8 @@ public class FlightsInfo {
         return flightId;
     }
 
-    public void setFlightId(String flightId) {
+    public void setFlightId() {
+        String flightId = origin.charAt(0) + destination.charAt(0) + "-" + Integer.toString(date[1]) + Integer.toString(date[0]) + "-" + Integer.toString(time[1]) + Integer.toString(time[0]);
         this.flightId = flightId;
     }
 
@@ -75,4 +76,5 @@ public class FlightsInfo {
     public void setSeats(int seats) {
         this.seats = seats;
     }
+
 }
