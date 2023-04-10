@@ -39,7 +39,7 @@ public class Admin {
         idMaking(flight, flight.getDate(), flight.getTime(), flight.getOrigin(), flight.getDestination());
         System.out.println(cls);
         flightsInfo.add(flight);
-        System.out.println("new flight added.");
+        System.out.println("New Flight Added.");
         System.out.println("|FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |");
         System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
 
