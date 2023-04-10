@@ -41,6 +41,7 @@ public class Admin {
         flightsInfo.add(flight);
         System.out.println("New Flight Added.");
         System.out.println("|FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |");
+        System.out.println(".......................................................................");
         System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
 
     }
@@ -186,4 +187,15 @@ public class Admin {
         }
         return -1;
     }
+
+    public void flightSchedules() {
+        System.out.println(cls);
+        System.out.println("|FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |");
+        System.out.println(".......................................................................");
+        for(FlightsInfo flight : flightsInfo){
+            System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
+            System.out.println(".......................................................................");
+        }
+    }
+
 }
