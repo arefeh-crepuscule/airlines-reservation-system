@@ -1,18 +1,49 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class User {
 
     private  String userName  ;
+    private String notification ;
+
+    public void setNotification(String notification) {
+        this.notification += notification;
+    }
+
     private  String passWord ;
     private int  charge = 0;
+    private final ArrayList<FlightsInfo> userFlight = new ArrayList<>();
     private final String cls = "\033[H\033[2J";
     public Scanner scanner = new Scanner(System.in);
+    private  Flights flights = new Flights();
 
+
+    public void signIn(){
+        if(notification != null ){
+            System.out.println(cls);
+            System.out.print("There is some notification for you:\n");
+            printNotif();
+            notification = null;
+            System.out.print("For go ahead enter something :\t");
+            scanner.nextLine();
+        }
+    }
+
+    private void printNotif() {
+        if (notification != null){
+            System.out.print ( """
+
+                    This flight removed :
+                    |  |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |
+                    ..........................................................................
+                    """+notification);
+        }
+    }
 
     public void printUserMenu() {
         System.out.println(cls);
-        System.out.println("--------------------------------------------------");
-        System.out.println("               Passenger Menu Options             ");
+        System.out.print("--------------------------------------------------\n");
+        System.out.print("               Passenger Menu Options             \n");
         System.out.print("--------------------------------------------------\n\n");
         System.out.println("   <1> Change password ");
         System.out.println("   <2> Search flight tickets");
@@ -48,7 +79,7 @@ public class User {
      * @param inputPass new pass that we want to check it
      * @return true or false mean new pass is same or not
      */
-    public boolean checkPass(String inputPass){
+    private boolean checkPass(String inputPass){
         if ( passWord.equals(inputPass))
             return true;
         return false;
