@@ -6,28 +6,27 @@ import java.util.Scanner;
 
 public class User {
 
-    private  String userName  ;
-    private  String passWord ;
-    private String notification ;
-    private int  charge = 0;
-    private  ArrayList<FlightsInfo> tempFlights = new ArrayList<>();
+    private String userName;
+    private String passWord;
+    private String notification;
+    private int charge = 0;
+    private ArrayList<FlightsInfo> tempFlights = new ArrayList<>();
     private final String cls = "\033[H\033[2J";
     public Scanner scanner = new Scanner(System.in);
-    private  UserAccess flights = new UserAccess();
-    private HashMap <String , FlightsInfo> tempHashMap = new HashMap<>();
-    private HashMap <String , FlightsInfo> userFlights = new HashMap<>();
-    private HashMap <String , User> tempPasserngerMap = new HashMap<>();
+    private UserAccess flights = new UserAccess();
+    private HashMap<String, FlightsInfo> tempHashMap = new HashMap<>();
+    private HashMap<String, FlightsInfo> userFlights = new HashMap<>();
+    private HashMap<String, User> tempPasserngerMap = new HashMap<>();
     private Users usrs = new Users();
 
 
-
-
-
-    public User(String user , String pass){
+    public User(String user, String pass) {
         this.passWord = pass;
         this.userName = user;
     }
-    public User(){}
+
+    public User() {
+    }
 
     public String getUserName() {
         return userName;
@@ -41,31 +40,31 @@ public class User {
         this.notification += notification;
     }
 
-    public void passengerMenu(){
+    public void passengerMenu() {
         System.out.println(cls);
         int input = -1;
         while (input != 0)
             printPassengerMenu();
         input = scanner.nextInt();
-        if(input <0 || input >6 ){
+        if (input < 0 || input > 6) {
             System.out.println(cls);
             inputError();
-        }else{
-            switch (input){
-                case 0-> System.out.println(cls) ;
-                case 1-> changePass();
+        } else {
+            switch (input) {
+                case 0 -> System.out.println(cls);
+                case 1 -> changePass();
 //                case 2->
-                case 3-> bookTicket();
+                case 3 -> bookTicket();
 //                case 4->
-//                case 5->
-                case 6->addCharge();
+                case 5-> bookedTickets();
+                case 6 -> addCharge();
             }
         }
 
     }
 
-    public void signIn(){
-        if(notification != null ){
+    public void signIn() {
+        if (notification != null) {
             System.out.println(cls);
             System.out.print("There is some notification for you:\n");
             printNotif();
@@ -76,13 +75,13 @@ public class User {
     }
 
     private void printNotif() {
-        if (notification != null){
-            System.out.print ( """
+        if (notification != null) {
+            System.out.print("""
 
                     This flight removed :
                     |  |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |
                     ..........................................................................
-                    """+notification);
+                    """ + notification);
         }
     }
 
@@ -99,31 +98,49 @@ public class User {
         System.out.println("   <6> Add charge");
         System.out.println("   <0> Sign out");
     }
-    private void bookTicket (){
+
+    private void bookedTickets() {
+        System.out.println(cls);
+        System.out.println("You booked this flight already :");
+        printFlights(userFlights);
+    }
+
+    private void printFlights(HashMap<String,FlightsInfo> userFlights) {
+        FlightsInfo flight;
+        System.out.print("|FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |Ticket ID           | \n"+"..........................................................................\n");
+        for (String ticketId : userFlights.keySet()) {
+            flight = userFlights.get(ticketId);
+            System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|%20s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats(),ticketId);
+            System.out.println("..........................................................................");
+
+        }
+    }
+
+    private void bookTicket() {
         System.out.print(">pleas enter id of flight you want to book :\t");
         String inputId = scanner.nextLine();
         FlightsInfo flight = checkExist(inputId);
-        if (flight != null){
+        if (flight != null) {
             booking(flight);
-            System.out.print(cls+"Booking done!");
-        }else{
+            System.out.print(cls + "Booking done!");
+        } else {
             System.out.println("there is no such flight with this ID!!");
         }
     }
 
     private void booking(FlightsInfo flight) {
-        String ticketId = "WH"+ Integer.toString(userFlights.size()+1)+"-"+userName+"-"+flight.getFlightId();
-        userFlights.put(ticketId,flight);
+        String ticketId = "WH" + Integer.toString(userFlights.size() + 1) + "-" + userName + "-" + flight.getFlightId();
+        userFlights.put(ticketId, flight);
         tempFlights = flights.getFlightsInfo();
         flights.updateSeats(tempFlights.indexOf(flight), -1);
         tempPasserngerMap = usrs.getPasserngerMap();
-        flights.addHash(flight,tempPasserngerMap.get(userName+passWord) );
+        flights.addHash(flight, tempPasserngerMap.get(userName + passWord));
     }
 
     private FlightsInfo checkExist(String inputId) {
         tempHashMap = flights.getIdKey();
-        for (String key: tempHashMap.keySet()) {
-            if(inputId.equals(key))
+        for (String key : tempHashMap.keySet()) {
+            if (inputId.equals(key))
                 return tempHashMap.get(key);
         }
         return null;
@@ -132,18 +149,19 @@ public class User {
     /**
      * give the extra charge that user want to charge and call the update function
      */
-    public void addCharge (){
+    public void addCharge() {
         System.out.printf("Your current charge :\t%10d\n", charge);
         System.out.print("How much do you want to charge?\t");
         int extraCharge = scanner.nextInt();
         chargeUpdate(extraCharge);
         System.out.println(cls);
-        System.out.printf("Your charge has been updated :\t%10s",charge);
+        System.out.printf("Your charge has been updated :\t%10s", charge);
     }
 
     /**
      * updated private charge with extra parameter
-      * @param extraCharge the variable for add or subtract charge variable
+     *
+     * @param extraCharge the variable for add or subtract charge variable
      */
     private void chargeUpdate(int extraCharge) {
         charge += extraCharge;
@@ -151,32 +169,33 @@ public class User {
 
     /**
      * check input pass that be as same as saved pass in password variable
+     *
      * @param inputPass new pass that we want to check it
      * @return true or false mean new pass is same or not
      */
-    private boolean checkPass(String inputPass){
-        if ( passWord.equals(inputPass))
+    private boolean checkPass(String inputPass) {
+        if (passWord.equals(inputPass))
             return true;
         return false;
     }
 
     /**
      * change user password with check old password , get new password and update pass word
-      */
-    public void changePass(){
+     */
+    public void changePass() {
         System.out.print("enter your current password :\t");
         String temp = scanner.nextLine();
-        if(checkPass(temp)){
+        if (checkPass(temp)) {
             passWord = temp;
-            System.out.printf(cls+"\nYour password has been updated");
-        }else {
+            System.out.printf(cls + "\nYour password has been updated");
+        } else {
             inputError();
         }
     }
 
     /**
      * this function print error input means user input is wrong and need try again
-      */
+     */
     private void inputError() {
         System.out.println(cls);
         System.out.print("Incorrect input , try again!! \n\n");
