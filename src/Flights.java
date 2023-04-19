@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Flights {
     protected final String cls = "\033[H\033[2J";
     protected Scanner scanner = new Scanner(System.in);
-    protected final ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
+    protected ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
     protected String notification ;
 
     protected HashMap <String , ArrayList<User>>  map = new HashMap<>();
@@ -14,13 +14,19 @@ public class Flights {
         return flightsInfo;
     }
 
+    protected HashMap <String , FlightsInfo> idKey = new HashMap<>();
+
+    public HashMap<String, FlightsInfo> getIdKey() {
+        return idKey;
+    }
 
 }
 class AdminAccess extends Flights{
+    public void setFlightsInfo(ArrayList<FlightsInfo> flightsInfo) {
+        this.flightsInfo = flightsInfo;
 
-
+    }
     public void removeNotification(FlightsInfo flight){
-
         String id = flight.getFlightId();
         ArrayList<User>user = map.get(id);
         for(User temp : user){
@@ -59,6 +65,10 @@ class AdminAccess extends Flights{
             flightsInfo.add(flight);
         }
     }
+
+    public void newFlight(FlightsInfo flight) {
+        idKey.put(flight.getFlightId() , flight);
+    }
 }
 
 
@@ -91,4 +101,6 @@ class  UserAccess extends Flights{
      flight.setSeats(flight.getSeats()+amount);
      flightsInfo.set(index,flight);
     }
+
+
 }

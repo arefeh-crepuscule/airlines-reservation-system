@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Users {
@@ -6,9 +7,14 @@ public class Users {
     private final String cls = "\033[H\033[2J";
     private static Admin admin = getInstance1();
     private static ArrayList<User> passengers = getInstance2();
+    private HashMap <String , User> passerngerMap = new HashMap<>();
     private User temp = new User();
 
 
+
+    public HashMap<String, User> getPasserngerMap() {
+        return passerngerMap;
+    }
     public void signIn() {
         String input = "-1";
         while (!input.equals("0")) {
@@ -46,6 +52,7 @@ public class Users {
     private void makeNewPassenger(String user, String pass) {
         User passenger = new User(user, pass);
         passengers.add(passenger);
+        passerngerMap.put(user+pass, passenger);
     }
 
     public boolean checkSignIn(String user, String pass) {

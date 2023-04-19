@@ -1,22 +1,68 @@
+import com.sun.jdi.IntegerType;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class User {
 
     private  String userName  ;
+    private  String passWord ;
     private String notification ;
+    private int  charge = 0;
+    private  ArrayList<FlightsInfo> tempFlights = new ArrayList<>();
+    private final String cls = "\033[H\033[2J";
+    public Scanner scanner = new Scanner(System.in);
+    private  UserAccess flights = new UserAccess();
+    private HashMap <String , FlightsInfo> tempHashMap = new HashMap<>();
+    private HashMap <String , FlightsInfo> userFlights = new HashMap<>();
+    private HashMap <String , User> tempPasserngerMap = new HashMap<>();
+    private Users usrs = new Users();
+
+
+
+
+
+    public User(String user , String pass){
+        this.passWord = pass;
+        this.userName = user;
+    }
+    public User(){}
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassWord() {
+        return passWord;
+    }
 
     public void setNotification(String notification) {
         this.notification += notification;
     }
 
-    private  String passWord ;
-    private int  charge = 0;
-    private final ArrayList<FlightsInfo> userFlight = new ArrayList<>();
-    private final String cls = "\033[H\033[2J";
-    public Scanner scanner = new Scanner(System.in);
-    private  Flights flights = new Flights();
+    public void passengerMenu(){
+        System.out.println(cls);
+        int input = -1;
+        while (input != 0)
+            printPassengerMenu();
+        input = scanner.nextInt();
+        if(input <0 || input >6 ){
+            System.out.println(cls);
+            inputError();
+        }else{
+            switch (input){
+                case 0-> System.out.println(cls) ;
+                case 1-> changePass();
+//                case 2->
+                case 3-> bookTicket();
+//                case 4->
+//                case 5->
+                case 6->addCharge();
+            }
+        }
 
+    }
 
     public void signIn(){
         if(notification != null ){
@@ -40,7 +86,7 @@ public class User {
         }
     }
 
-    public void printUserMenu() {
+    public void printPassengerMenu() {
         System.out.println(cls);
         System.out.print("--------------------------------------------------\n");
         System.out.print("               Passenger Menu Options             \n");
@@ -52,6 +98,35 @@ public class User {
         System.out.println("   <5> Booked tickets");
         System.out.println("   <6> Add charge");
         System.out.println("   <0> Sign out");
+    }
+    private void bookTicket (){
+        System.out.print(">pleas enter id of flight you want to book :\t");
+        String inputId = scanner.nextLine();
+        FlightsInfo flight = checkExist(inputId);
+        if (flight != null){
+            booking(flight);
+            System.out.print(cls+"Booking done!");
+        }else{
+            System.out.println("there is no such flight with this ID!!");
+        }
+    }
+
+    private void booking(FlightsInfo flight) {
+        String ticketId = "WH"+ Integer.toString(userFlights.size()+1)+"-"+userName+"-"+flight.getFlightId();
+        userFlights.put(ticketId,flight);
+        tempFlights = flights.getFlightsInfo();
+        flights.updateSeats(tempFlights.indexOf(flight), -1);
+        tempPasserngerMap = usrs.getPasserngerMap();
+        flights.addHash(flight,tempPasserngerMap.get(userName+passWord) );
+    }
+
+    private FlightsInfo checkExist(String inputId) {
+        tempHashMap = flights.getIdKey();
+        for (String key: tempHashMap.keySet()) {
+            if(inputId.equals(key))
+                return tempHashMap.get(key);
+        }
+        return null;
     }
 
     /**
