@@ -17,7 +17,7 @@ public class User {
     private HashMap<String, FlightsInfo> tempHashMap = new HashMap<>();
     private HashMap<String, FlightsInfo> userFlights = new HashMap<>();
     private HashMap<String, User> tempPasserngerMap = new HashMap<>();
-    private Users usrs = new Users();
+    private Users users = new Users();
 
 
     public User(String user, String pass) {
@@ -55,7 +55,7 @@ public class User {
                 case 1 -> changePass();
 //                case 2->
                 case 3 -> bookTicket();
-//                case 4->
+                case 4->ticketCancellation();
                 case 5-> bookedTickets();
                 case 6 -> addCharge();
             }
@@ -99,6 +99,22 @@ public class User {
         System.out.println("   <0> Sign out");
     }
 
+    private void ticketCancellation (){
+        System.out.println(cls);
+        System.out.print("Pleas enter ticket ID of flight that you want cancelled : \t");
+        String ticketId = scanner.nextLine();
+        if (userFlights.containsKey(ticketId)){
+            cancel(ticketId);
+        }
+    }
+
+    private void cancel(String ticketId) {
+        FlightsInfo flight = userFlights.get(ticketId);
+        flights.updateSeats(flight,1);
+        flights.removeHash(flight, users.getPasserngerMap().get(userName+passWord));
+        userFlights.remove(ticketId);
+    }
+
     private void bookedTickets() {
         System.out.println(cls);
         System.out.println("You booked this flight already :");
@@ -131,10 +147,8 @@ public class User {
     private void booking(FlightsInfo flight) {
         String ticketId = "WH" + Integer.toString(userFlights.size() + 1) + "-" + userName + "-" + flight.getFlightId();
         userFlights.put(ticketId, flight);
-        tempFlights = flights.getFlightsInfo();
-        flights.updateSeats(tempFlights.indexOf(flight), -1);
-        tempPasserngerMap = usrs.getPasserngerMap();
-        flights.addHash(flight, tempPasserngerMap.get(userName + passWord));
+        flights.updateSeats(flight, -1);
+        flights.addHash(flight, users.getPasserngerMap().get(userName + passWord));
     }
 
     private FlightsInfo checkExist(String inputId) {

@@ -83,7 +83,7 @@ class  UserAccess extends Flights{
         map.replace(id , tempPassenger);
     }
 
-    public  void removeHash(FlightsInfo flight , String passenger){
+    public  void removeHash(FlightsInfo flight , User passenger){
         String id = flight.getFlightId();
         ArrayList <User> tempPassenger = map.get(id);
         tempPassenger .remove(passenger);
@@ -96,10 +96,11 @@ class  UserAccess extends Flights{
         return notification1;
     }
 
-    public  void updateSeats (int index , int amount){
-     FlightsInfo flight = flightsInfo.get(index);
+    public  void updateSeats (FlightsInfo flight , int amount){
+     flightsInfo.remove(flight);
      flight.setSeats(flight.getSeats()+amount);
-     flightsInfo.set(index,flight);
+     flightsInfo.add(flight);
+
     }
 
 
