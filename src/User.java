@@ -32,10 +32,17 @@ public class User {
         return passWord;
     }
 
+    /**
+     * add new notification
+      * @param notification new massage need to add
+     */
     public void setNotification(String notification) {
         this.notification += notification;
     }
 
+    /**
+     * function first print the pasenger menue and then call other function to do something
+      */
     public void passengerMenu() {
         signInNotify();
         System.out.println(cls);
@@ -57,6 +64,9 @@ public class User {
 
     }
 
+    /**
+     * function that call when passenger sign in and if there are any notify for passenger show it
+      */
     public void signInNotify() {
         if (notification !="") {
             System.out.println(cls);
@@ -68,6 +78,9 @@ public class User {
         }
     }
 
+    /**
+     * print to notify
+      */
     private void printNotify() {
         if (notification != null) {
             System.out.print("""
@@ -79,6 +92,9 @@ public class User {
         }
     }
 
+    /**
+     * table of passenger menu for calling to print
+      */
     public void printPassengerMenu() {
         System.out.println(cls);
         System.out.print("--------------------------------------------------\n");
@@ -149,6 +165,11 @@ public class User {
         }
     }
 
+    /**
+     * check if charge of passenger enough for booking this flight
+     * @param flight for get tihs price
+     * @return true or false mean the passenger can book or not
+     */
     private boolean checkCharge(FlightsInfo flight) {
         return (charge > flight.getPrice());
     }
@@ -234,7 +255,6 @@ public class User {
             index = scanner.nextLine();
             System.out.println(cls);
             index = checkFilterInput(index, tempFlights);
-            System.out.println(flights.getFlightsInfo());
         }
         System.out.println(cls);
 
@@ -267,7 +287,7 @@ public class User {
                 return index;
             }
         }
-        checkFlightObjects(index, filterNameInput, tempFlights);
+        flights.checkFlightObjects(index, filterNameInput, tempFlights);
         return index;
     }
 
@@ -289,43 +309,7 @@ public class User {
         System.out.println(cls);
     }
 
-    private void checkFlightObjects(String index, String searchWord, ArrayList<FlightsInfo> tempFlights) {
 
-        for (int i = 0; i < tempFlights.size(); i++) {
-            FlightsInfo flight = flights.getFlightsInfo().get(i);
-            switch (index) {
-                case "1" -> {
-                    if (flight.getFlightId().equals(searchWord)) {
-                        tempFlights.add(flight);
-                        i -= 1;
-                    }
-                }
-                case "2" -> {
-                    if (flight.getOrigin().equals(searchWord)){
-                        tempFlights.add(flight);
-
-                    }
-                }
-                case "3" -> {
-                    if (flight.getDestination().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-                case "4" -> {
-                    if (flight.getDatePrinted().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-                case "5" -> {
-                    if (flight.getTimePrinted().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-                case "6" -> {
-                    if (flight.getPricePrinted().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-
-            }
-        }
-    }
 
 
     private void showResultOfSearch(ArrayList<FlightsInfo> tempFlights) {

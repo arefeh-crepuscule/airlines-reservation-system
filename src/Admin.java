@@ -18,10 +18,6 @@ public class Admin {
         return instance;
     }
 
-    // check if the enter user and pass word are for admin
-    public boolean checkAdmin(String user, String pass) {
-        return user.equals(userName) && pass.equals(passWord);
-    }
 
     public void adminMenu() {
         System.out.println(cls);

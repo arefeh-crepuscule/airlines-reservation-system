@@ -115,4 +115,40 @@ public class Flights {
         ArrayList<User> passenger = new ArrayList<>();
         map.put(flight.getFlightId(), passenger);
     }
+
+    public void checkFlightObjects(String index, String searchWord, ArrayList<FlightsInfo> tempFlights) {
+        for ( FlightsInfo flight : flightsInfo) {
+
+            switch (index) {
+                case "1" -> {
+                    if (flight.getFlightId().equals(searchWord)) {
+                        tempFlights.add(flight);
+                    }
+                }
+                case "2" -> {
+                    if (flight.getOrigin().equals(searchWord)){
+                        tempFlights.add(flight);
+
+                    }
+                }
+                case "3" -> {
+                    if (flight.getDestination().equals(searchWord))
+                        tempFlights.add(flight);
+                }
+                case "4" -> {
+                    if (flight.getDatePrinted().equals(searchWord))
+                        tempFlights.add(flight);
+                }
+                case "5" -> {
+                    if (flight.getTimePrinted().equals(searchWord))
+                        tempFlights.add(flight);
+                }
+                case "6" -> {
+                    if (flight.getPricePrinted().equals(searchWord))
+                        tempFlights.add(flight);
+                }
+
+            }
+        }
+    }
 }
