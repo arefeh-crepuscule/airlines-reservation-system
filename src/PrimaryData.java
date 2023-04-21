@@ -4,10 +4,11 @@ import java.util.Random;
 public class PrimaryData {
     private ArrayList<FlightsInfo> primary = new ArrayList<>();
     private ArrayList<String> city = new ArrayList<>();
-    private String tempCity;
-    Random rand = new Random();
     private FlightsInfo flight = new FlightsInfo();
     private AdminAccess flights = new AdminAccess();
+    private String tempCity;
+    Random rand = new Random();
+
 
     public PrimaryData(){
         makePrimaryFlights();
