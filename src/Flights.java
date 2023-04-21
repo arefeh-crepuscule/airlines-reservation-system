@@ -10,14 +10,13 @@ public class Flights {
 
     protected HashMap <String , ArrayList<User>>  map = new HashMap<>();
 
-    public ArrayList<FlightsInfo> getFlightsInfo() {
-        return flightsInfo;
-    }
-
     protected HashMap <String , FlightsInfo> idKey = new HashMap<>();
 
     public HashMap<String, FlightsInfo> getIdKey() {
         return idKey;
+    }
+    public ArrayList<FlightsInfo> getFlightsInfo() {
+        return flightsInfo;
     }
 
 }

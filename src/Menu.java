@@ -25,9 +25,7 @@ public class Menu {
                 case "2" -> users.signUp();
                 case "3" -> {
                 }
-                default -> {
-                    inputError();
-                }
+                default -> inputError();
             }
         }
     }

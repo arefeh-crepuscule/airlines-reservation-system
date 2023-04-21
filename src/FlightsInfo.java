@@ -51,6 +51,9 @@ public class FlightsInfo {
         this.date = date;
         datePrinted = Integer.toString(date[2])+"-"+Integer.toString(date[1])+"-"+Integer.toString(date[0]);
     }
+    public String getPricePrinted(){
+        return Integer.toString(price);
+    }
 
     public int[] getTime() {
         return time;
@@ -76,5 +79,9 @@ public class FlightsInfo {
     public void setSeats(int seats) {
         this.seats = seats;
     }
+    public  void setTogether(){
+
+    }
+
 
 }

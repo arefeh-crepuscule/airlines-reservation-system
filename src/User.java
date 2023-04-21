@@ -1,5 +1,3 @@
-import com.sun.jdi.IntegerType;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -16,7 +14,7 @@ public class User {
     private UserAccess flights = new UserAccess();
     private HashMap<String, FlightsInfo> tempHashMap = new HashMap<>();
     private HashMap<String, FlightsInfo> userFlights = new HashMap<>();
-    private HashMap<String, User> tempPasserngerMap = new HashMap<>();
+    private HashMap<String, User> tempPassengerMap = new HashMap<>();
     private Users users = new Users();
 
 
@@ -41,40 +39,37 @@ public class User {
     }
 
     public void passengerMenu() {
+        signInNotify();
         System.out.println(cls);
-        int input = -1;
-        while (input != 0)
+        String input = "";
+        while (!input.equals("0"))
             printPassengerMenu();
-        input = scanner.nextInt();
-        if (input < 0 || input > 6) {
-            System.out.println(cls);
-            inputError();
-        } else {
-            switch (input) {
-                case 0 -> System.out.println(cls);
-                case 1 -> changePass();
-//                case 2->
-                case 3 -> bookTicket();
-                case 4->ticketCancellation();
-                case 5-> bookedTickets();
-                case 6 -> addCharge();
-            }
+        input = scanner.nextLine();
+        switch (input) {
+            case "0" -> System.out.println(cls);
+            case "1" -> changePass();
+            case "2" -> searchFlight();
+            case "3" -> bookTicket();
+            case "4" -> ticketCancellation();
+            case "5" -> bookedTickets();
+            case "6" -> addCharge();
+            default -> inputError();
         }
 
     }
 
-    public void signIn() {
+    public void signInNotify() {
         if (notification != null) {
             System.out.println(cls);
             System.out.print("There is some notification for you:\n");
-            printNotif();
+            printNotify();
             notification = null;
-            System.out.print("For go ahead enter something :\t");
+            System.out.print("Enter for continue... :\t");
             scanner.nextLine();
         }
     }
 
-    private void printNotif() {
+    private void printNotify() {
         if (notification != null) {
             System.out.print("""
 
@@ -99,19 +94,19 @@ public class User {
         System.out.println("   <0> Sign out");
     }
 
-    private void ticketCancellation (){
+    private void ticketCancellation() {
         System.out.println(cls);
         System.out.print("Pleas enter ticket ID of flight that you want cancelled : \t");
         String ticketId = scanner.nextLine();
-        if (userFlights.containsKey(ticketId)){
+        if (userFlights.containsKey(ticketId)) {
             cancel(ticketId);
         }
     }
 
     private void cancel(String ticketId) {
         FlightsInfo flight = userFlights.get(ticketId);
-        flights.updateSeats(flight,1);
-        flights.removeHash(flight, users.getPasserngerMap().get(userName+passWord));
+        flights.updateSeats(flight, 1);
+        flights.removeHash(flight, users.getPassengerMap().get(userName + passWord));
         userFlights.remove(ticketId);
     }
 
@@ -121,12 +116,15 @@ public class User {
         printFlights(userFlights);
     }
 
-    private void printFlights(HashMap<String,FlightsInfo> userFlights) {
+    private void printFlights(HashMap<String, FlightsInfo> userFlights) {
         FlightsInfo flight;
-        System.out.print("|FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |Ticket ID           | \n"+"..........................................................................\n");
+        System.out.print("""
+                |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |Ticket ID           |\s
+                ............................................................................................
+                """);
         for (String ticketId : userFlights.keySet()) {
             flight = userFlights.get(ticketId);
-            System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|%20s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats(),ticketId);
+            System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|%20s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats(), ticketId);
             System.out.println("..........................................................................");
 
         }
@@ -148,7 +146,7 @@ public class User {
         String ticketId = "WH" + Integer.toString(userFlights.size() + 1) + "-" + userName + "-" + flight.getFlightId();
         userFlights.put(ticketId, flight);
         flights.updateSeats(flight, -1);
-        flights.addHash(flight, users.getPasserngerMap().get(userName + passWord));
+        flights.addHash(flight, users.getPassengerMap().get(userName + passWord));
     }
 
     private FlightsInfo checkExist(String inputId) {
@@ -214,4 +212,121 @@ public class User {
         System.out.println(cls);
         System.out.print("Incorrect input , try again!! \n\n");
     }
+
+    private void searchFlight() {
+        String index = "";
+        tempFlights = flights.flightsInfo;
+        while (!index.equals("-1")) {
+            printFilterMenu();
+            index = scanner.nextLine();
+            System.out.println(cls);
+            index = checkFilterInput(index, tempFlights);
+        }
+        System.out.println(cls);
+    }
+
+    private String checkFilterInput(String index, ArrayList<FlightsInfo> tempFlights) {
+        String filterNameInput = null;
+        String[] times = new String[3];
+        switch (index) {
+            case "1", "2", "3", "6" -> {
+                System.out.print("\nSearcher word:\t");
+                filterNameInput = scanner.nextLine();
+            }
+            case "4" -> {
+                getDateFilter(times);
+                filterNameInput = times[2] + "-" + times[1] + "-" + times[0];
+            }
+            case "5" -> {
+                getTimeFilter(times);
+                filterNameInput = times[1] + ":" + times[0];
+            }
+            case "7" -> {
+                showResultOfSearch(tempFlights);
+                System.out.println("Enter to continue...");
+                scanner.nextLine();
+                return "-1";
+            }
+            default -> {
+                inputError();
+                return index;
+            }
+        }
+        checkFlightObjects(index, tempFlights, filterNameInput);
+        return index;
+    }
+
+    private void getTimeFilter(String[] times) {
+        System.out.print("\nhour:\t");
+        times[1] = scanner.nextLine();
+        System.out.print("\nminute:\t");
+        times[0] = scanner.nextLine();
+        System.out.println(cls);
+    }
+
+    private void getDateFilter(String[] times) {
+        System.out.print("\n>day:\t");
+        times[0] = scanner.nextLine();
+        System.out.print("\n>month:\t");
+        times[1] = scanner.nextLine();
+        System.out.print("\n>year:\t");
+        times[2] = scanner.nextLine();
+        System.out.println(cls);
+    }
+
+    private void checkFlightObjects(String index, ArrayList<FlightsInfo> tempFlights, String searchWord) {
+
+        for (FlightsInfo flight : this.tempFlights) {
+
+            switch (index) {
+                case "1", "4", "5", "6" -> {
+                    if (!(flight.getFlightId().equals(searchWord) || flight.getDatePrinted().equals(searchWord) || flight.getTimePrinted().equals(searchWord) || flight.getPricePrinted().equals(searchWord)))
+                        tempFlights.remove(flight);
+                }
+                case "2" -> {
+                    if (!flight.getOrigin().equals(searchWord))
+                        tempFlights.remove(flight);
+                }
+                case "3" -> {
+                    if (!flight.getDestination().equals(searchWord))
+                        tempFlights.remove(flight);
+                }
+            }
+        }
+    }
+
+
+    private void showResultOfSearch(ArrayList<FlightsInfo> tempFlights) {
+        System.out.println(cls);
+        System.out.println("The result of your filter:");
+        if (tempFlights.isEmpty()) {
+            System.out.println("There is no flight with this information!!");
+
+        } else {
+            System.out.print("""
+                    |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |
+                    .......................................................................
+                    """);
+            for (FlightsInfo flight : tempFlights) {
+                System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
+                System.out.println(".......................................................................");
+            }
+        }
+    }
+
+    private void printFilterMenu() {
+        System.out.print("""
+                Exert your filters ...
+                   
+                   1- Flight ID
+                   2- Origin
+                   3- Destination
+                   4- Date
+                   5- Time
+                   6- Price
+                   7- Show
+                """);
+    }
+
+
 }
