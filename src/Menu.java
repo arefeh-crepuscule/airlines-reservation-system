@@ -4,10 +4,12 @@ import java.util.Scanner;
 public class Menu {
     static Scanner scanner = new Scanner(System.in);
     private static final String cls = "\033[H\033[2J";
-    Users users = new Users();
+    Users users = Users.getInstance();
 
 
     public Menu() {
+        PrimaryData primaryData=new PrimaryData();
+        primaryData.makePrimaryFlights();
         startMenu();
     }
 

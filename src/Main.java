@@ -6,7 +6,6 @@ public class Main {
     public static final String cls = "\033[H\033[2J";
 
     public static void main(String[] args) {
-        PrimaryData primaryData=new PrimaryData();
         Menu obj = new Menu();
     }
 

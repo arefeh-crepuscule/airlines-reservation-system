@@ -7,8 +7,16 @@ public class Admin {
     private final String cls = "\033[H\033[2J";
     public Scanner scanner = new Scanner(System.in);
     public ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
-    public  AdminAccess flights = new AdminAccess();
+    public Flights flights = Flights.getInstance();
 
+    public static Admin instance = new Admin();
+
+    private Admin() {
+    }
+
+    public static Admin getInstance() {
+        return instance;
+    }
 
     // check if the enter user and pass word are for admin
     public boolean checkAdmin(String user, String pass) {
@@ -26,6 +34,7 @@ public class Admin {
                 case "1" -> add();
                 case "2" -> update();
                 case "3" -> remove();
+                case "4" -> flightSchedules();
                 default -> Menu.inputError();
             }
         }
@@ -41,6 +50,7 @@ public class Admin {
                    <1> Add flight
                    <2> Update ticket information
                    <3> Remove flight
+                   <4> Flights schedule
                    <0> Sign out
                 """);
     }
@@ -53,9 +63,9 @@ public class Admin {
             flightsInfo = flights.getFlightsInfo();
             System.out.println("which one do you want to update? enter its number!");
             flightSchedules();
-            index = scanner.nextInt();
-            if (index - 1 <= flightsInfo.size() && index >0) {
-                featureSelection(index - 1);
+            index = Integer.parseInt(scanner.nextLine());
+            if (index - 1 <= flightsInfo.size() && index > 0) {
+                featureSelection(flightsInfo.get(index - 1));
                 System.out.println("This flight is changed!");
                 System.out.println("if you wanna changed another enter 1 otherwise enter something else:");
                 checkLoop = scanner.nextLine();
@@ -67,27 +77,29 @@ public class Admin {
         System.out.println(cls);
     }
 
-    private void featureSelection(int i) {
+    private void featureSelection(FlightsInfo flight) {
         System.out.println(cls);
-        System.out.println("Which one of feature do you want to change ?");
-        System.out.print("1-Origin\n2-Destination\n3-Date\n4-Time\n5-Price\n6-seats\n0-back");
-        String index = scanner.nextLine();
+        flightsInfo.remove(flight);
+        String index = "";
         while (!index.equals("0")) {
-                FlightsInfo flight = flightsInfo.get(i);
-                switch (index) {
-                    case "1" -> originGetting(flight);
-                    case "2" -> destinationGetting(flight);
-                    case "3" -> dateGetting(flight);
-                    case "4" -> timeGetting(flight);
-                    case "5" -> priceGetting(flight);
-                    case "6" -> seatsUpdate(flight);
-                    case "0" -> {
-                    }
-                    default -> Menu.inputError();
+            System.out.println("Which one of feature do you want to change ?");
+            System.out.print("1-Origin\n2-Destination\n3-Date\n4-Time\n5-Price\n6-seats\n0-back\n");
+            index = scanner.nextLine();
+            switch (index) {
+                case "1" -> originGetting(flight);
+                case "2" -> destinationGetting(flight);
+                case "3" -> dateGetting(flight);
+                case "4" -> timeGetting(flight);
+                case "5" -> priceGetting(flight);
+                case "6" -> seatsUpdate(flight);
+                case "0" -> {
                 }
-                flightsInfo.set(i, flight);
-                flights.setFlightsInfo(flightsInfo);
+                default -> Menu.inputError();
+            }
         }
+        flight.setFlightId();
+        flightsInfo.add(flight);
+        flights.setFlightsInfo(flightsInfo);
         System.out.println(cls);
     }
 
@@ -111,8 +123,12 @@ public class Admin {
     public void add() {
         FlightsInfo flight = new FlightsInfo();
         makeNewFlight(flight);
-        System.out.print("New Flight Added.\n" + "|FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |\n+" + ".......................................................................\n");
-        System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
+        System.out.print("""
+                New Flight Added.
+                |FlightId     |Origin    |Destination  |Date      |Time |Price    |Seats |
+                ..........................................................................
+                """);
+        System.out.printf("|%13s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
         scanner.nextLine();
         System.out.println(cls);
     }
@@ -251,16 +267,17 @@ public class Admin {
         int index;
         while (checkLoop.equals("1")) {
             flightsInfo = flights.getFlightsInfo();
-            System.out.println("which one do you want to remove? enter its number!");
+            System.out.println("which one do you want to remove? enter its number! (0 to back)");
             flightSchedules();
-            index = scanner.nextInt();
-            if (index - 1 <= flightsInfo.size()&& index>0) {
+            index = Integer.parseInt(scanner.nextLine());
+            if (index - 1 <= flightsInfo.size() && index > 0) {
                 flights.remove(index);
-                flightsInfo.remove(index - 1);
+                System.out.println(cls);
                 System.out.println("this flight is removed!");
                 System.out.println("if you wanna remove another enter 1 otherwise enter something else:");
                 checkLoop = scanner.nextLine();
-                System.out.println(cls);
+            } else if (index == 0) {
+                break;
             } else {
                 Menu.inputError();
             }
@@ -280,11 +297,15 @@ public class Admin {
 
     // print available flight schedules for admin
     public void flightSchedules() {
+        flightsInfo = flights.getFlightsInfo();
         System.out.println(cls);
-        System.out.print("|  |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |\n"+"..........................................................................\n");
+        System.out.print("""
+                |  |FlightId     |Origin    |Destination  |Date      |Time |Price    |Seats |
+                .............................................................................
+                """);
         for (FlightsInfo flight : flightsInfo) {
-            System.out.printf("|%2d|%10s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flightsInfo.indexOf(flight) + 1, flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
-            System.out.println("..........................................................................");
+            System.out.printf("|%2d|%13s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flightsInfo.indexOf(flight) + 1, flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
+            System.out.println(".............................................................................");
         }
     }
 

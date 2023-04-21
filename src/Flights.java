@@ -1,37 +1,49 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class Flights {
-    protected final String cls = "\033[H\033[2J";
-    protected Scanner scanner = new Scanner(System.in);
-    protected ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
-    protected String notification ;
+    private final String cls = "\033[H\033[2J";
+    private Scanner scanner = new Scanner(System.in);
+    private ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
+    private ArrayList<FlightsInfo> TflightsInfo = new ArrayList<>();
+    private String notification ="" ;
+    private HashMap <String , ArrayList<User>>  map = new HashMap<>();
 
-    protected HashMap <String , ArrayList<User>>  map = new HashMap<>();
-
-    protected HashMap <String , FlightsInfo> idKey = new HashMap<>();
+    private HashMap <String , FlightsInfo> idKey = new HashMap<>();
+    private static Flights  instance = new Flights();
+    private Flights(){}
+    public static Flights getInstance(){
+        return instance;
+    }
 
     public HashMap<String, FlightsInfo> getIdKey() {
         return idKey;
     }
     public ArrayList<FlightsInfo> getFlightsInfo() {
+        TflightsInfo =flightsInfo;
         return flightsInfo;
     }
+    public void back()
+    {
+        flightsInfo=TflightsInfo;
+    }
 
-}
-class AdminAccess extends Flights{
+    public void addFlight(FlightsInfo flight){
+        flightsInfo.add(flight);
+    }
+
     public void setFlightsInfo(ArrayList<FlightsInfo> flightsInfo) {
-        this.flightsInfo = flightsInfo;
-
+       this.flightsInfo =flightsInfo;
     }
     public void removeNotification(FlightsInfo flight){
         String id = flight.getFlightId();
-        ArrayList<User>user = map.get(id);
-        for(User temp : user){
-            setNotification(flight);
-            temp.setNotification(notification);
-            notification = null;
+        if (map.containsKey(id)) {
+            ArrayList<User> user = map.get(id);
+            for (User temp : user) {
+                setNotification(flight);
+                temp.setNotification(notification);
+                temp.removeAdmin(flight);
+                notification = null;
+            }
         }
     }
 
@@ -68,12 +80,14 @@ class AdminAccess extends Flights{
     public void newFlight(FlightsInfo flight) {
         idKey.put(flight.getFlightId() , flight);
     }
-}
+
+
+    public void newInMap(FlightsInfo flight){
+
+    }
 
 
 
-
-class  UserAccess extends Flights{
 
     public  void addHash(FlightsInfo flight , User passenger){
         String id = flight.getFlightId();
@@ -103,4 +117,8 @@ class  UserAccess extends Flights{
     }
 
 
+    public void makeNewHash(FlightsInfo flight) {
+        ArrayList<User> passenger = new ArrayList<>();
+        map.put(flight.getFlightId(), passenger);
+    }
 }

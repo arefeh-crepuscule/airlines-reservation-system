@@ -1,4 +1,8 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class FlightsInfo {
+    private HashMap<String , ArrayList<User>> map = new HashMap<>();
     private String flightId ;
     private String origin;
     private String destination;
@@ -6,6 +10,9 @@ public class FlightsInfo {
     private String datePrinted ;
     private int [] time = new int[2];
     private String timePrinted;
+    private int price;
+    private int seats;
+
 
     public String getDatePrinted() {
         return datePrinted;
@@ -15,8 +22,6 @@ public class FlightsInfo {
         return timePrinted;
     }
 
-    private int price;
-    private int seats;
 
     public String getFlightId() {
         return flightId;

@@ -5,11 +5,14 @@ import java.util.Scanner;
 public class Users {
     public Scanner scanner = new Scanner(System.in);
     private final String cls = "\033[H\033[2J";
-    private  Admin admin = new Admin();
+    private  Admin admin = Admin.getInstance();
     private  ArrayList<User> passengers = new ArrayList<>();
     private final HashMap <String , User> passengerMap = new HashMap<>();
-
-
+    private static Users instance = new Users();
+    private Users (){}
+    public static Users getInstance(){
+        return instance;
+    }
 
 
     public HashMap<String, User> getPassengerMap() {
@@ -26,14 +29,16 @@ public class Users {
                 System.out.print("There is no account whit this username and password!!");
                 System.out.print("\nif you wanna back enter 0 otherwise enter another :\t");
                 input = scanner.nextLine();
+            }else {
+                input="0";
             }
         }
         System.out.println(cls);
     }
 
     public void signUp() {
-        String input = null;
-        while (input.equals("0")) {
+        String input = "";
+        while (!input.equals("0")) {
             System.out.println(cls);
             System.out.print("pleas enter your username :\t");
             String user = scanner.nextLine();
@@ -45,6 +50,7 @@ public class Users {
                 input = scanner.nextLine();
             } else {
                 makeNewPassenger(user, pass);
+                input ="0";
             }
         }
     }
