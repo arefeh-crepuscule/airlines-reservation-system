@@ -4,7 +4,6 @@ public class Flights {
     private final String cls = "\033[H\033[2J";
     private Scanner scanner = new Scanner(System.in);
     private ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
-    private ArrayList<FlightsInfo> TflightsInfo = new ArrayList<>();
     private String notification ="" ;
     private HashMap <String , ArrayList<User>>  map = new HashMap<>();
 
@@ -19,12 +18,7 @@ public class Flights {
         return idKey;
     }
     public ArrayList<FlightsInfo> getFlightsInfo() {
-        TflightsInfo =flightsInfo;
         return flightsInfo;
-    }
-    public void back()
-    {
-        flightsInfo=TflightsInfo;
     }
 
     public void addFlight(FlightsInfo flight){

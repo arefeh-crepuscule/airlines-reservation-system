@@ -228,7 +228,6 @@ public class User {
 
     private void searchFlight() {
         ArrayList<FlightsInfo> tempFlights = new ArrayList<>();
-        tempFlights = flights.getFlightsInfo();
         String index = "";
         while (!index.equals("-1")) {
             printFilterMenu();
@@ -248,7 +247,6 @@ public class User {
             case "1", "2", "3", "6" -> {
                 System.out.print("\nSearcher word:\t");
                 filterNameInput = scanner.nextLine();
-                System.out.println(flights.getFlightsInfo());
             }
             case "4" -> {
                 getDateFilter(times);
@@ -262,7 +260,6 @@ public class User {
                 showResultOfSearch(tempFlights);
                 System.out.println("Enter to continue...");
                 scanner.nextLine();
-                System.out.println(flights.getFlightsInfo());
                 return "-1";
             }
             default -> {
@@ -294,38 +291,36 @@ public class User {
 
     private void checkFlightObjects(String index, String searchWord, ArrayList<FlightsInfo> tempFlights) {
 
-        System.out.println(flights.getFlightsInfo());
         for (int i = 0; i < tempFlights.size(); i++) {
-            System.out.println(flights.getFlightsInfo());
-            FlightsInfo flight = tempFlights.get(i);
+            FlightsInfo flight = flights.getFlightsInfo().get(i);
             switch (index) {
                 case "1" -> {
-                    if (!(flight.getFlightId().equals(searchWord))) {
-                        tempFlights.remove(flight);
+                    if (flight.getFlightId().equals(searchWord)) {
+                        tempFlights.add(flight);
                         i -= 1;
                     }
                 }
                 case "2" -> {
-                    if (!((flight.getOrigin().equals(searchWord)))) {
-                        tempFlights.remove(flight);
-                        i -= 1;
+                    if (flight.getOrigin().equals(searchWord)){
+                        tempFlights.add(flight);
+
                     }
                 }
                 case "3" -> {
-                    if (!(flight.getDestination().equals(searchWord)))
-                        tempFlights.remove(flight);
+                    if (flight.getDestination().equals(searchWord))
+                        tempFlights.add(flight);
                 }
                 case "4" -> {
-                    if (!(flight.getDatePrinted().equals(searchWord)))
-                        tempFlights.remove(flight);
+                    if (flight.getDatePrinted().equals(searchWord))
+                        tempFlights.add(flight);
                 }
                 case "5" -> {
-                    if (!(flight.getTimePrinted().equals(searchWord)))
-                        tempFlights.remove(flight);
+                    if (flight.getTimePrinted().equals(searchWord))
+                        tempFlights.add(flight);
                 }
                 case "6" -> {
-                    if (!(flight.getPricePrinted().equals(searchWord)))
-                        tempFlights.remove(flight);
+                    if (flight.getPricePrinted().equals(searchWord))
+                        tempFlights.add(flight);
                 }
 
             }
