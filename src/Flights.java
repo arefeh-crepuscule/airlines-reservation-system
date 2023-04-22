@@ -7,6 +7,7 @@ public class Flights {
     private final Tickets tickets= Tickets.getInstance();
 
 
+
     private Flights() {
     }
 
@@ -27,6 +28,8 @@ public class Flights {
      */
     public void addFlight(FlightsInfo flight) {
         flightsInfo.add(flight);
+        tickets.newFlightAdded(flight);
+        idFlight.put(flight.getFlightId(), flight);
     }
 
     /**
@@ -44,8 +47,8 @@ public class Flights {
         System.out.println("|  |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |");
         System.out.println("..........................................................................");
         for (FlightsInfo flight : tempFlights) {
-            System.out.printf("|%2d|%10s|%10s|%13s|%10s|%5s|%9s|%6s|\n", tempFlights.indexOf(flight) + 1, flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
-            System.out.println("..........................................................................\n");
+            System.out.printf("|%2d|%13s|%10s|%13s|%10s|%5s|%9s|%6s|\n", tempFlights.indexOf(flight) + 1, flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
+            System.out.println(".............................................................................\n");
         }
     }
 
@@ -65,9 +68,8 @@ public class Flights {
      * @param amount amount that we want update
      */
     public void updateSeats(FlightsInfo flight, int amount) {
-        flightsInfo.remove(flight);
         flight.setSeats(flight.getSeats() + amount);
-        flightsInfo.add(flight);
+
 
     }
 
@@ -210,5 +212,8 @@ public class Flights {
      */
     public FlightsInfo flightGetting (String id){
         return idFlight.get(id);
+    }
+    public int getFlightSeats (int index){
+        return flightsInfo.get(index).getSeats();
     }
 }

@@ -122,10 +122,12 @@ public class Admin {
     public void flightSchedules() {
         System.out.println(cls);
         flights.allFlightsSchedule();
+        System.out.println("Enter to continue...");
+        scanner.nextLine();
     }
 
     /**
-     * whit calling other funciont make new fight
+     * whit calling other function make new fight
       */
     private void makeNewFlight() {
         int flightOrder = flights.newFlight();
@@ -157,7 +159,7 @@ public class Admin {
                 case "3" -> flights.newDate(flightOrder, dateGetting());
                 case "4" -> flights.newTime(flightOrder,timeGetting());
                 case "5" -> flights.newPrice(flightOrder,priceGetting());
-                case "6" -> flights.newSeats(flightOrder, seatsUpdate());
+                case "6" -> flights.newSeats(flightOrder, seatsUpdate()+flights.getFlightSeats(flightOrder));
                 case "0" -> {
                 }
                 default -> Menu.inputError();
@@ -177,7 +179,7 @@ public class Admin {
         while (true) {
             if (seats < 1) {
                 Menu.inputError();
-                seats = scanner.nextInt();
+                seats = Integer.parseInt(scanner.nextLine());
             } else {
                 break;
             }
@@ -227,7 +229,7 @@ public class Admin {
     public void dayGetting(int[] date) {
         while (true) {
             System.out.print("\nday :\t");
-            date[0] = scanner.nextInt();
+            date[0] = Integer.parseInt(scanner.nextLine());
             if ((date[0] > 31 || date[0] < 1) || (date[1] > 6 && date[0] == 31)) {
                 Menu.inputError();
             } else {

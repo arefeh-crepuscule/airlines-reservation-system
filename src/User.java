@@ -55,7 +55,9 @@ public class User {
                 case "4" -> ticketCancellation();
                 case "5" -> bookedTickets();
                 case "6" -> addCharge();
-                case "7" -> flights.allFlightsSchedule();
+                case "7" -> {flights.allFlightsSchedule();
+                    System.out.println("Enter to continue...");
+                scanner.nextLine();}
                 default -> inputError();
             }
         }
@@ -200,13 +202,15 @@ public class User {
     }
 
     private void cancel(String ticketId) {
+        flights.updateSeats(tickets.getFlight(ticketId).getFlight() ,1);
         chargeUpdate(tickets.ticketCancellation(ticketId));
     }
 
     private void bookedTickets() {
         System.out.println(cls);
         System.out.println("You booked this flight already :");
-        tickets.userBooked(users.getPassengerMap().get(userName+passWord));
+        if(!(tickets.userBooked(users.getPassengerMap().get(userName+passWord))))
+            System.out.println("There is nothing yet");
 
     }
 
@@ -215,9 +219,13 @@ public class User {
         String inputId = scanner.nextLine();
         if (flights.checkExist(inputId)) {
             if (checkCharge(flights.flightGetting(inputId))) {
-                booking(flights.flightGetting(inputId));
+                String ticketId = tickets.book(users.getPassengerMap().get(userName+passWord), inputId);
+                 booking(tickets.getFlight(ticketId).getFlight());
                 chargeUpdate(-(flights.flightGetting(inputId).getPrice()));
-                System.out.print(cls + "Booking done!");
+                System.out.println(cls + "Booking done!");
+                System.out.println("Your ticket ID : "+ ticketId);
+                System.out.println("Enter to continue...");
+                scanner.nextLine();
             } else {
                 System.out.println("Your charge is not enough for booking this flight");
             }
@@ -237,7 +245,6 @@ public class User {
     }
 
     private void booking(FlightsInfo flight) {
-        tickets.makeTicket(users.getPassengerMap().get(userName+passWord) ,flight);
         flights.updateSeats(flight, -1);
     }
 
