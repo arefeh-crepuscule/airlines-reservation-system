@@ -1,12 +1,10 @@
 import java.util.*;
 
 public class Flights {
-    private final String cls = "\033[H\033[2J";
-    private Scanner scanner = new Scanner(System.in);
-    private ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
-    private HashMap<String, FlightsInfo> idFlight = new HashMap<>();
-    private static Flights instance = new Flights();
-    private Tickets tickets= Tickets.getInstance();
+    private final ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
+    private final HashMap<String, FlightsInfo> idFlight = new HashMap<>();
+    private static final Flights instance = new Flights();
+    private final Tickets tickets= Tickets.getInstance();
 
 
     private Flights() {
@@ -21,10 +19,6 @@ public class Flights {
     }
     public void addFlight(FlightsInfo flight) {
         flightsInfo.add(flight);
-    }
-
-    public void removeFlight(FlightsInfo flight) {
-        flightsInfo.remove(flight);
     }
 
     public  void allFlightsSchedule(){
