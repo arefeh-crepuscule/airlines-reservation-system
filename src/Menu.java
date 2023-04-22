@@ -14,6 +14,9 @@ public class Menu {
         startMenu();
     }
 
+    /**
+     * print message error if user input incorrect
+     */
     public static void inputError() {
         System.out.print(cls + "Incorrect input , try again!! \n\n");
     }

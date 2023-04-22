@@ -17,6 +17,10 @@ public class Admin {
     }
 
 
+    /**
+     * admin menu call function when adin choose want what do want to do
+     * whit switch handel its choice and with while hold on the menu
+     */
     public void adminMenu() {
         System.out.println(cls);
         String input = "-1";
@@ -35,7 +39,9 @@ public class Admin {
 
     }
 
-    //just print admin menu
+    /**
+     * just print admin menu
+     */
     public void printAdminMenu() {
         System.out.print("""
                 --------------------------------------------------
@@ -48,7 +54,10 @@ public class Admin {
                    <0> Sign out
                 """);
     }
-    //get information of new flight to add
+
+    /**
+     * get information of new flight to add
+     */
     public void add() {
         makeNewFlight();
         System.out.println(cls+"New flight added .");
@@ -56,6 +65,9 @@ public class Admin {
         System.out.println(cls);
     }
 
+    /**
+     * update information of flight that admin choose and change eny feature of flight as admin want
+      */
     public void update() {
         System.out.println(cls);
         String checkLoop = "1";
@@ -76,8 +88,11 @@ public class Admin {
         }
         System.out.println(cls);
     }
-    // remove a flight according enter id from admin
-    //this function first show the table of flight information and then give its number and remove that
+
+    /**
+     * remove a flight according enter id from admin
+     * this function first show the table of flight information and then give its number and remove that
+     */
     public void remove() {
         System.out.println(cls);
         String checkLoop = "1";
@@ -100,10 +115,18 @@ public class Admin {
         }
         System.out.println(cls);
     }
+
+    /**
+     * call function to print flight schedule
+     */
     public void flightSchedules() {
         System.out.println(cls);
         flights.allFlightsSchedule();
     }
+
+    /**
+     * whit calling other funciont make new fight
+      */
     private void makeNewFlight() {
         int flightOrder = flights.newFlight();
         flights.newOrigin(flightOrder,originGetting());
@@ -117,7 +140,10 @@ public class Admin {
         System.out.println(cls);
     }
 
-
+    /**
+     * select feature for set every information of flight
+     * @param flightOrder index of flight in flightsInfo arraylist
+     */
     private void featureSelection(int flightOrder) {
         System.out.println(cls);
         String index = "";
@@ -140,7 +166,10 @@ public class Admin {
         System.out.println(cls);
     }
 
-
+    /**
+     * get seats as admin want to add
+      * @return input seats
+     */
     private int seatsUpdate( ) {
         System.out.println("How many seats wanna added?");
         System.out.print("\n seats :\t");
@@ -156,21 +185,30 @@ public class Admin {
         return seats;
     }
 
-    //set origin of ticket in new object
+    /**
+     * get origin of ticket in new object
+     * @return input origin
+     */
     public String originGetting() {
         System.out.println(cls);
         System.out.print("origin of flight : \t");
         return (scanner.nextLine());
     }
 
-    //get and set destination of ticket in new object
+    /**
+     * get  destination of ticket in new object
+     * @return input destination
+     */
     public String destinationGetting() {
         System.out.println(cls);
         System.out.print("\ndestination of flight: \t");
         return (scanner.nextLine());
     }
 
-    //get and set date of ticket in new object
+    /**
+     * get date of ticket in new object
+     * @return input date
+     */
     public int[] dateGetting() {
         System.out.println(cls);
         System.out.print("\n Date of flight :\n");
@@ -182,6 +220,10 @@ public class Admin {
         return date;
     }
 
+    /**
+     * get day of date parameter and save it in array
+      * @param date an array holding date information
+     */
     public void dayGetting(int[] date) {
         while (true) {
             System.out.print("\nday :\t");
@@ -194,6 +236,10 @@ public class Admin {
         }
     }
 
+    /**
+     * get month of date parameter and save it in array
+     * @param date an array holding date information
+     */
     public void monthGetting(int[] date) {
         while (true) {
             System.out.print("\nmonth :\t");
@@ -206,7 +252,10 @@ public class Admin {
         }
     }
 
-    //get and set time of ticket in new object
+    /**
+     * get time of ticket in new object
+     * @return array include of time parameters
+     */
     public int[] timeGetting() {
         System.out.println(cls);
         System.out.print("\n Time of flight :\n");
@@ -235,7 +284,10 @@ public class Admin {
 
     }
 
-    //get and set price of ticket in new object
+    /**
+     *get price of ticket in new object
+     * @return input price
+     */
     public int priceGetting() {
         System.out.println(cls);
         System.out.print("\n price of flight :\t");
@@ -250,7 +302,10 @@ public class Admin {
         return price;
     }
 
-    //get and set seat of ticket in new object
+    /**
+     * get seat of ticket in new object
+     * @return input seats
+     */
     public int seatsGetting() {
         System.out.println(cls);
         System.out.print("\n seats of flight:\t");

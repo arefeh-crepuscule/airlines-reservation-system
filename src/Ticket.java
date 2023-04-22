@@ -11,6 +11,11 @@ public class Ticket {
         makePersonalId(user, flight);
     }
 
+    /**
+     * make personal ticket id from flight information and passenger information
+      * @param user passenger account
+     * @param flight flight is booking
+     */
     private void makePersonalId(User user, FlightsInfo flight) {
         ticketId = (user.getUserName()).toCharArray()[0]+(user.getUserName()).toCharArray()[1]+"-"+flight.getFlightId()+"-"+ ((flight.getDate())[0] + (flight.getDate())[1]);
     }
