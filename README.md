@@ -1,4 +1,3 @@
-# airlines-reservation-system
 Advance Programming
 Yazd University
 Teacher: Dr.Shokoofeh Bostan
