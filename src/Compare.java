@@ -4,19 +4,14 @@ public class Compare {
     public boolean compare (FlightsInfo temp , FlightsInfo main){
         this.temp =temp;
         this.main=main;
-        if (flightId() && origin() && destination()&&date() && time() && price())
-            return true;
-
-        return false;
+        return flightId() && origin() && destination() && date() && time() && price();
     }
 
     private boolean price() {
         if(temp.getPricePrinted()==null)
             return true;
         else{
-            if(temp.getPricePrinted().equals(main.getPricePrinted()))
-                return true;
-            return false;
+            return temp.getPricePrinted().equals(main.getPricePrinted());
         }
     }
 
@@ -24,9 +19,7 @@ public class Compare {
         if(temp.getTimePrinted()==null)
             return true;
         else{
-            if(temp.getTimePrinted().equals(main.getTimePrinted()))
-                return true;
-            return false;
+            return temp.getTimePrinted().equals(main.getTimePrinted());
         }
     }
 
@@ -34,9 +27,7 @@ public class Compare {
         if(temp.getDatePrinted()==null)
             return true;
         else{
-            if(temp.getDatePrinted().equals(main.getDatePrinted()))
-                return true;
-            return false;
+            return temp.getDatePrinted().equals(main.getDatePrinted());
         }
     }
 
@@ -44,9 +35,7 @@ public class Compare {
         if(temp.getDestination()==null)
             return true;
         else{
-            if(temp.getDestination().equals(main.getDestination()))
-                return true;
-            return false;
+            return temp.getDestination().equals(main.getDestination());
         }
     }
 
@@ -54,9 +43,7 @@ public class Compare {
         if(temp.getOrigin()==null)
             return true;
         else{
-            if(temp.getOrigin().equals(main.getOrigin()))
-                return true;
-            return false;
+            return temp.getOrigin().equals(main.getOrigin());
         }
     }
 
@@ -64,9 +51,7 @@ public class Compare {
         if(temp.getFlightId()==null)
             return true;
         else{
-            if(temp.getFlightId().equals(main.getFlightId()))
-                return true;
-            return false;
+            return temp.getFlightId().equals(main.getFlightId());
         }
     }
 
