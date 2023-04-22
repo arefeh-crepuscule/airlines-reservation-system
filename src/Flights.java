@@ -1,3 +1,4 @@
+import java.awt.geom.Area;
 import java.util.*;
 
 public class Flights {
@@ -44,8 +45,8 @@ public class Flights {
      * @param tempFlights an arraylist include flight object
      */
     public void showFlightSchedules(ArrayList <FlightsInfo> tempFlights) {
-        System.out.println("|  |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |");
-        System.out.println("..........................................................................");
+        System.out.println("|  |FlightId     |Origin    |Destination  |Date      |Time |Price    |Seats |");
+        System.out.println(".............................................................................");
         for (FlightsInfo flight : tempFlights) {
             System.out.printf("|%2d|%13s|%10s|%13s|%10s|%5s|%9s|%6s|\n", tempFlights.indexOf(flight) + 1, flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
             System.out.println(".............................................................................\n");
@@ -75,43 +76,21 @@ public class Flights {
 
     /**
      * check flight object with specific parameters and collect them
-     * @param index show which parameters of flight object n=want to check
-     * @param searchWord the word that we want to know if there is thing as same as it
-     * @param tempFlights an arraylist include collected flights
+     * @param flightId searcher word
+     * @param origin  searcher word
+     * @param destination  searcher word
+     * @param date  searcher word
+     * @param time  searcher word
+     * @param price  searcher word
+     * @param tempFlights collection of result of searching
      */
-    public void checkFlightObjects(String index, String searchWord, ArrayList<FlightsInfo> tempFlights) {
+
+    public void checkFlightObjects(String flightId , String origin, String destination, String date, String time, String price , ArrayList<FlightsInfo> tempFlights) {
+        FlightsInfo temp = new FlightsInfo(flightId,origin,destination,date,time,price);
+        Compare compare =new Compare();
         for (FlightsInfo flight : flightsInfo) {
-
-            switch (index) {
-                case "1" -> {
-                    if (flight.getFlightId().equals(searchWord)) {
-                        tempFlights.add(flight);
-                    }
-                }
-                case "2" -> {
-                    if (flight.getOrigin().equals(searchWord)) {
-                        tempFlights.add(flight);
-
-                    }
-                }
-                case "3" -> {
-                    if (flight.getDestination().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-                case "4" -> {
-                    if (flight.getDatePrinted().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-                case "5" -> {
-                    if (flight.getTimePrinted().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-                case "6" -> {
-                    if (flight.getPricePrinted().equals(searchWord))
-                        tempFlights.add(flight);
-                }
-
-            }
+            if(compare.compare(temp ,flight))
+                tempFlights.add(flight);
         }
     }
 

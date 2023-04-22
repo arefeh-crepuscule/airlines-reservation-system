@@ -7,9 +7,20 @@ public class FlightsInfo {
     private int [] date =new int[3];
     private String datePrinted ;
     private int [] time = new int[2];
-    private String timePrinted;
+    private String timePrinted ;
+    private String pricePrinted;
     private int price;
     private int seats;
+
+    public FlightsInfo(){}
+    public FlightsInfo(String flightId, String origin, String destination, String date, String time, String price) {
+        this.flightId =flightId;
+        this.origin=origin;
+        this.destination = destination;
+        this.datePrinted=date;
+        this.timePrinted =time;
+        this.pricePrinted=price;
+    }
 
 
     public String getDatePrinted() {
@@ -54,7 +65,7 @@ public class FlightsInfo {
         datePrinted = date[2] +"-"+ date[1] +"-"+ date[0];
     }
     public String getPricePrinted(){
-        return Integer.toString(price);
+        return pricePrinted;
     }
 
     public void setTime(int[] time) {
@@ -68,6 +79,7 @@ public class FlightsInfo {
 
     public void setPrice(int price) {
         this.price = price;
+        this.pricePrinted = Integer.toString(price);
     }
 
     public int getSeats() {

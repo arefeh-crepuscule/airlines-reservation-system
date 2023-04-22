@@ -130,11 +130,12 @@ public class User {
     private void searchFlight() {
         ArrayList<FlightsInfo> tempFlights = new ArrayList<>();
         String index = "";
+        String [] searcher = new String[6];
         while (!index.equals("-1")) {
             printFilterMenu();
             index = scanner.nextLine();
             System.out.println(cls);
-            index = checkFilterInput(index, tempFlights);
+            index = checkFilterInput(index, tempFlights , searcher);
         }
         System.out.println(cls);
 
@@ -155,23 +156,36 @@ public class User {
                 """);
     }
 
-    private String checkFilterInput(String index, ArrayList<FlightsInfo> tempFlights) {
-        String filterNameInput;
+    private String checkFilterInput(String index, ArrayList<FlightsInfo> tempFlights, String[] searcher) {
+//        String origin=null, destination=null ,date =null, time=null,price=null ,flightId =null;
         String[] times = new String[3];
         switch (index) {
-            case "1", "2", "3", "6" -> {
+            case "1" -> {
                 System.out.print("\nSearcher word:\t");
-                filterNameInput = scanner.nextLine();
+                 searcher[0]= scanner.nextLine();
+            }
+            case "2" -> {
+                System.out.print("\nSearcher word:\t");
+                searcher[1] = scanner.nextLine();
+            }
+            case  "3" -> {
+                System.out.print("\nSearcher word:\t");
+                searcher[2] = scanner.nextLine();
+            }
+            case "6" -> {
+                System.out.print("\nSearcher word:\t");
+                searcher[3] = scanner.nextLine();
             }
             case "4" -> {
                 getDateFilter(times);
-                filterNameInput = times[2] + "-" + times[1] + "-" + times[0];
+                searcher[4] = times[2] + "-" + times[1] + "-" + times[0];
             }
             case "5" -> {
                 getTimeFilter(times);
-                filterNameInput = times[1] + ":" + times[0];
+                searcher[5] = times[1] + ":" + times[0];
             }
             case "7" -> {
+                flights.checkFlightObjects(searcher[0] ,searcher[1],searcher[2],searcher[3],searcher[4], searcher[5] ,tempFlights);
                 showResultOfSearch(tempFlights);
                 System.out.println("Enter to continue...");
                 scanner.nextLine();
@@ -185,7 +199,7 @@ public class User {
                 return index;
             }
         }
-        flights.checkFlightObjects(index, filterNameInput, tempFlights);
+//        flights.checkFlightObjects(searcher[0] ,searcher[1],searcher[2],searcher[3],searcher[4], searcher[5] ,tempFlights);
         return index;
     }
 
