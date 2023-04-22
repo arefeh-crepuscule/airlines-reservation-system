@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Admin {
@@ -6,7 +5,6 @@ public class Admin {
     private final String passWord = "passadmin2023";
     private final String cls = "\033[H\033[2J";
     public Scanner scanner = new Scanner(System.in);
-    public ArrayList<FlightsInfo> flightsInfo = new ArrayList<>();
     public Flights flights = Flights.getInstance();
 
     public static Admin instance = new Admin();
@@ -50,18 +48,24 @@ public class Admin {
                    <0> Sign out
                 """);
     }
+    //get information of new flight to add
+    public void add() {
+        makeNewFlight();
+        System.out.println(cls+"New flight added .");
+        scanner.nextLine();
+        System.out.println(cls);
+    }
 
     public void update() {
         System.out.println(cls);
         String checkLoop = "1";
         int index;
         while (checkLoop.equals("1")) {
-            flightsInfo = flights.getFlightsInfo();
             System.out.println("which one do you want to update? enter its number!");
-            flightSchedules();
+            flights.allFlightsSchedule();
             index = Integer.parseInt(scanner.nextLine());
-            if (index - 1 <= flightsInfo.size() && index > 0) {
-                featureSelection(flightsInfo.get(index - 1));
+            if (index - 1 <= flights.flightsInfoSize() && index > 0) {
+                featureSelection(index - 1);
                 System.out.println("This flight is changed!");
                 System.out.println("if you wanna changed another enter 1 otherwise enter something else:");
                 checkLoop = scanner.nextLine();
@@ -72,35 +76,72 @@ public class Admin {
         }
         System.out.println(cls);
     }
-
-    private void featureSelection(FlightsInfo flight) {
+    // remove a flight according enter id from admin
+    //this function first show the table of flight information and then give its number and remove that
+    public void remove() {
         System.out.println(cls);
-        flightsInfo.remove(flight);
+        String checkLoop = "1";
+        int index;
+        while (checkLoop.equals("1")) {
+            System.out.println("which one do you want to remove? enter its number! (0 to back)");
+            flights.allFlightsSchedule();
+            index = Integer.parseInt(scanner.nextLine());
+            if (index - 1 <= flights.flightsInfoSize() && index > 0) {
+                flights.remove(index);
+                System.out.println(cls);
+                System.out.println("this flight is removed!");
+                System.out.println("Back(0) or Remove an other (something else) :\t");
+                checkLoop = scanner.nextLine();
+            } else if (index == 0) {
+                break;
+            } else {
+                Menu.inputError();
+            }
+        }
+        System.out.println(cls);
+    }
+    public void flightSchedules() {
+        System.out.println(cls);
+        flights.allFlightsSchedule();
+    }
+    private void makeNewFlight() {
+        int flightOrder = flights.newFlight();
+        flights.newOrigin(flightOrder,originGetting());
+        flights.newDestination(flightOrder,destinationGetting());
+        flights.newDate(flightOrder,dateGetting());
+        flights.newTime(flightOrder,timeGetting());
+        flights.newPrice(flightOrder,priceGetting());
+        flights.newSeats(flightOrder,seatsGetting());
+        flights.newFlightId(flightOrder);
+        flights.addNewFlight(flightOrder);
+        System.out.println(cls);
+    }
+
+
+    private void featureSelection(int flightOrder) {
+        System.out.println(cls);
         String index = "";
         while (!index.equals("0")) {
             System.out.println("Which one of feature do you want to change ?");
             System.out.print("1-Origin\n2-Destination\n3-Date\n4-Time\n5-Price\n6-seats\n0-back\n");
             index = scanner.nextLine();
             switch (index) {
-                case "1" -> originGetting(flight);
-                case "2" -> destinationGetting(flight);
-                case "3" -> dateGetting(flight);
-                case "4" -> timeGetting(flight);
-                case "5" -> priceGetting(flight);
-                case "6" -> seatsUpdate(flight);
+                case "1" -> flights.newOrigin(flightOrder, originGetting());
+                case "2" -> flights.newDestination(flightOrder, destinationGetting());
+                case "3" -> flights.newDate(flightOrder, dateGetting());
+                case "4" -> flights.newTime(flightOrder,timeGetting());
+                case "5" -> flights.newPrice(flightOrder,priceGetting());
+                case "6" -> flights.newSeats(flightOrder, seatsUpdate());
                 case "0" -> {
                 }
                 default -> Menu.inputError();
             }
         }
-        flight.setFlightId();
-        flightsInfo.add(flight);
-        flights.setFlightsInfo(flightsInfo);
         System.out.println(cls);
     }
 
 
-    private void seatsUpdate(FlightsInfo flight) {
+    private int seatsUpdate( ) {
         System.out.println("How many seats wanna added?");
         System.out.print("\n seats :\t");
         int seats = scanner.nextInt();
@@ -112,55 +153,25 @@ public class Admin {
                 break;
             }
         }
-        flight.setSeats(flight.getSeats() + seats);
-    }
-
-    //get information of new flight to add
-    public void add() {
-        FlightsInfo flight = new FlightsInfo();
-        makeNewFlight(flight);
-        System.out.print("""
-                New Flight Added.
-                |FlightId     |Origin    |Destination  |Date      |Time |Price    |Seats |
-                ..........................................................................
-                """);
-        System.out.printf("|%13s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
-        scanner.nextLine();
-        System.out.println(cls);
-    }
-
-    private void makeNewFlight(FlightsInfo flight) {
-        originGetting(flight);
-        destinationGetting(flight);
-        dateGetting(flight);
-        timeGetting(flight);
-        priceGetting(flight);
-        seatsGetting(flight);
-        flight.setFlightId();
-        System.out.println(cls);
-        flightsInfo = flights.getFlightsInfo();
-        flightsInfo.add(flight);
-        flights.setFlightsInfo(flightsInfo);
-        flights.newFlight(flight);
-
+        return seats;
     }
 
     //set origin of ticket in new object
-    public void originGetting(FlightsInfo flight) {
+    public String originGetting() {
         System.out.println(cls);
         System.out.print("origin of flight : \t");
-        flight.setOrigin(scanner.nextLine());
+        return (scanner.nextLine());
     }
 
     //get and set destination of ticket in new object
-    public void destinationGetting(FlightsInfo flight) {
+    public String destinationGetting() {
         System.out.println(cls);
         System.out.print("\ndestination of flight: \t");
-        flight.setDestination(scanner.nextLine());
+        return (scanner.nextLine());
     }
 
     //get and set date of ticket in new object
-    public void dateGetting(FlightsInfo flight) {
+    public int[] dateGetting() {
         System.out.println(cls);
         System.out.print("\n Date of flight :\n");
         System.out.print("year :\t");
@@ -168,7 +179,7 @@ public class Admin {
         date[2] = scanner.nextInt();
         monthGetting(date);
         dayGetting(date);
-        flight.setDate(date);
+        return date;
     }
 
     public void dayGetting(int[] date) {
@@ -196,7 +207,7 @@ public class Admin {
     }
 
     //get and set time of ticket in new object
-    public void timeGetting(FlightsInfo flight) {
+    public int[] timeGetting() {
         System.out.println(cls);
         System.out.print("\n Time of flight :\n");
         System.out.print("hour :\t");
@@ -220,12 +231,12 @@ public class Admin {
                 break;
             }
         }
-        flight.setTime(time);
+        return time;
 
     }
 
     //get and set price of ticket in new object
-    public void priceGetting(FlightsInfo flight) {
+    public int priceGetting() {
         System.out.println(cls);
         System.out.print("\n price of flight :\t");
         int price = scanner.nextInt();
@@ -236,11 +247,11 @@ public class Admin {
                 break;
             }
         }
-        flight.setPrice(price);
+        return price;
     }
 
     //get and set seat of ticket in new object
-    public void seatsGetting(FlightsInfo flight) {
+    public int seatsGetting() {
         System.out.println(cls);
         System.out.print("\n seats of flight:\t");
         int seats = scanner.nextInt();
@@ -251,59 +262,9 @@ public class Admin {
                 break;
             }
         }
-        flight.setSeats(seats);
+        return seats;
     }
 
-
-    // remove a flight according enter id from admin
-    //this function first show the table of flight information and then give its number and remove that
-    public void remove() {
-        System.out.println(cls);
-        String checkLoop = "1";
-        int index;
-        while (checkLoop.equals("1")) {
-            flightsInfo = flights.getFlightsInfo();
-            System.out.println("which one do you want to remove? enter its number! (0 to back)");
-            flightSchedules();
-            index = Integer.parseInt(scanner.nextLine());
-            if (index - 1 <= flightsInfo.size() && index > 0) {
-                flights.remove(index);
-                System.out.println(cls);
-                System.out.println("this flight is removed!");
-                System.out.println("if you wanna remove another enter 1 otherwise enter something else:");
-                checkLoop = scanner.nextLine();
-            } else if (index == 0) {
-                break;
-            } else {
-                Menu.inputError();
-            }
-        }
-        System.out.println(cls);
-    }
-
-    //searching in arraylist for find a ticket with specific id
-    public int search(String id) {
-        for (FlightsInfo flight : flightsInfo) {
-            if (flight.getFlightId() != null && flight.getFlightId().contains(id)) {
-                return flightsInfo.indexOf(flight);
-            }
-        }
-        return -1;
-    }
-
-    // print available flight schedules for admin
-    public void flightSchedules() {
-        flightsInfo = flights.getFlightsInfo();
-        System.out.println(cls);
-        System.out.print("""
-                |  |FlightId     |Origin    |Destination  |Date      |Time |Price    |Seats |
-                .............................................................................
-                """);
-        for (FlightsInfo flight : flightsInfo) {
-            System.out.printf("|%2d|%13s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flightsInfo.indexOf(flight) + 1, flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
-            System.out.println(".............................................................................");
-        }
-    }
 
     public String getUserName() {
         return userName;

@@ -3,11 +3,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class PrimaryData {
-    private ArrayList<FlightsInfo> primary = new ArrayList<>();
-    private ArrayList<String> city = new ArrayList<>(Arrays.asList("yazd","kerman","mashhad", "shiraz", "tehran", "esfahan", "ardabil", "kish","ahvaz","hamadan","karaj","semnan","ilam","gheshm","amol","tabas","savah","kashan"));
+    private final ArrayList<String> city = new ArrayList<>(Arrays.asList("yazd","kerman","mashhad", "shiraz", "tehran", "esfahan", "ardabil", "kish","ahvaz","hamadan","karaj","semnan","ilam","gheshm","amol","tabas","savah","kashan"));
 
-    private Flights flights = Flights.getInstance();
-    private String tempCity;
+    private final Flights flights = Flights.getInstance();
     Random rand = new Random();
 
     public PrimaryData(){
@@ -24,7 +22,6 @@ public class PrimaryData {
             flight.setSeats(245);
             flight.setFlightId();
             flights.addFlight(flight);
-            flights.makeNewHash(flight);
         }
     }
 
@@ -50,7 +47,7 @@ public class PrimaryData {
     }
 
     private void setCities(FlightsInfo flight) {
-        tempCity = city.get(rand.nextInt(city.size()));
+        String tempCity = city.get(rand.nextInt(city.size()));
         flight.setOrigin(tempCity);
         city.remove(tempCity);
         flight.setDestination(city.get(rand.nextInt(city.size())));

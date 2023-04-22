@@ -1,14 +1,11 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class Users {
-    public Scanner scanner = new Scanner(System.in);
-    private final String cls = "\033[H\033[2J";
-    private  Admin admin = Admin.getInstance();
-    private  ArrayList<User> passengers = new ArrayList<>();
+    private final Admin admin = Admin.getInstance();
+    private final ArrayList<User> passengers = new ArrayList<>();
     private final HashMap <String , User> passengerMap = new HashMap<>();
-    private static Users instance = new Users();
+    private static final Users instance = new Users();
 
 
 
@@ -33,10 +30,10 @@ public class Users {
     }
 
     /**
-     * check if there are any acount with input username and password parameters
+     * check if there are any account with input username and password parameters
       * @param user input username
      * @param pass input password
-     * @return
+     * @return true or false mean exit such username and password
      */
     public boolean checkSignIn(String user, String pass) {
         boolean res = false;

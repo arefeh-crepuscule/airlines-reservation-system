@@ -2,18 +2,15 @@ import java.util.*;
 
 public class User {
 
-    private String userName;
+    private final String userName;
     private String passWord;
     private String notification = "";
     private int charge = 0;
-    private ArrayList<FlightsInfo> temp = new ArrayList<>();
     private final String cls = "\033[H\033[2J";
     public Scanner scanner = new Scanner(System.in);
-    private Flights flights = Flights.getInstance();
-    private HashMap<String, FlightsInfo> tempHashMap = new HashMap<>();
-    private HashMap<String, FlightsInfo> userFlights = new HashMap<>();
-    private HashMap<String, User> tempPassengerMap = new HashMap<>();
-    private Users users = Users.getInstance();
+    private final Flights flights = Flights.getInstance();
+    private final Users users = Users.getInstance();
+    private final Tickets tickets = Tickets.getInstance();
 
 
     public User(String user, String pass) {
@@ -21,8 +18,6 @@ public class User {
         this.userName = user;
     }
 
-    public User() {
-    }
 
     public String getUserName() {
         return userName;
@@ -34,15 +29,17 @@ public class User {
 
     /**
      * add new notification
-      * @param notification new massage need to add
+     *
+     * @param notification new message need to add
      */
     public void setNotification(String notification) {
         this.notification += notification;
     }
 
     /**
-     * function first print the pasenger menue and then call other function to do something
-      */
+     * function first print the passenger menu and then call other function to do something
+     */
+
     public void passengerMenu() {
         signInNotify();
         System.out.println(cls);
@@ -58,6 +55,7 @@ public class User {
                 case "4" -> ticketCancellation();
                 case "5" -> bookedTickets();
                 case "6" -> addCharge();
+                case "7" -> flights.allFlightsSchedule();
                 default -> inputError();
             }
         }
@@ -66,13 +64,13 @@ public class User {
 
     /**
      * function that call when passenger sign in and if there are any notify for passenger show it
-      */
+     */
     public void signInNotify() {
-        if (notification !="") {
+        if (!notification.equals("")) {
             System.out.println(cls);
             System.out.print("There is some notification for you:\n");
             printNotify();
-            notification = null;
+            notification = "";
             System.out.print("Enter for continue... :\t");
             scanner.nextLine();
         }
@@ -80,9 +78,9 @@ public class User {
 
     /**
      * print to notify
-      */
+     */
     private void printNotify() {
-        if (notification != null) {
+        if (!notification.equals("")) {
             System.out.print("""
 
                     This flight removed :
@@ -94,26 +92,107 @@ public class User {
 
     /**
      * table of passenger menu for calling to print
-      */
+     */
     public void printPassengerMenu() {
         System.out.println(cls);
-        System.out.print("--------------------------------------------------\n");
-        System.out.print("               Passenger Menu Options             \n");
-        System.out.print("--------------------------------------------------\n\n");
-        System.out.println("   <1> Change password ");
-        System.out.println("   <2> Search flight tickets");
-        System.out.println("   <3> Booking ticket");
-        System.out.println("   <4> Ticket cancellation");
-        System.out.println("   <5> Booked tickets");
-        System.out.println("   <6> Add charge");
-        System.out.println("   <0> Sign out");
+        System.out.print("""
+                --------------------------------------------------
+                             Passenger Menu Options
+                --------------------------------------------------
+                       <1> Change password
+                       <2> Search flight tickets
+                       <3> Booking ticket
+                       <4> Ticket cancellation
+                       <5> Booked tickets
+                       <6> Add charge
+                       <7> Show all flights schedule
+                       <0> Sign out
+                """);
     }
+
+    /**
+     * change user password with check old password , get new password and update pass word
+     */
+    public void changePass() {
+        System.out.print("enter your current password :\t");
+        String temp = scanner.nextLine();
+        if (checkPass(temp)) {
+            System.out.print(cls + "New password :\t");
+            passWord = scanner.nextLine();
+            System.out.printf(cls + "\nYour password has been updated");
+        } else {
+            inputError();
+        }
+    }
+
+    private void searchFlight() {
+        ArrayList<FlightsInfo> tempFlights = new ArrayList<>();
+        String index = "";
+        while (!index.equals("-1")) {
+            printFilterMenu();
+            index = scanner.nextLine();
+            System.out.println(cls);
+            index = checkFilterInput(index, tempFlights);
+        }
+        System.out.println(cls);
+
+    }
+
+    public void printFilterMenu() {
+        System.out.print("""
+                Exert your filters ...
+                   
+                   1- Flight ID
+                   2- Origin
+                   3- Destination
+                   4- Date
+                   5- Time
+                   6- Price
+                   7- Show
+                   0- Back
+                """);
+    }
+
+    private String checkFilterInput(String index, ArrayList<FlightsInfo> tempFlights) {
+        String filterNameInput;
+        String[] times = new String[3];
+        switch (index) {
+            case "1", "2", "3", "6" -> {
+                System.out.print("\nSearcher word:\t");
+                filterNameInput = scanner.nextLine();
+            }
+            case "4" -> {
+                getDateFilter(times);
+                filterNameInput = times[2] + "-" + times[1] + "-" + times[0];
+            }
+            case "5" -> {
+                getTimeFilter(times);
+                filterNameInput = times[1] + ":" + times[0];
+            }
+            case "7" -> {
+                showResultOfSearch(tempFlights);
+                System.out.println("Enter to continue...");
+                scanner.nextLine();
+                return "-1";
+            }
+            case "0" -> {
+                return "-1";
+            }
+            default -> {
+                inputError();
+                return index;
+            }
+        }
+        flights.checkFlightObjects(index, filterNameInput, tempFlights);
+        return index;
+    }
+
 
     private void ticketCancellation() {
         System.out.println(cls);
         System.out.print("Pleas enter ticket ID of flight that you want cancelled : \t");
         String ticketId = scanner.nextLine();
-        if (userFlights.containsKey(ticketId)) {
+        if (tickets.checkExistTicket(ticketId)) {
             cancel(ticketId);
         } else {
             System.out.println("There is not any flights in your reserved with this information ");
@@ -121,41 +200,23 @@ public class User {
     }
 
     private void cancel(String ticketId) {
-        FlightsInfo flight = userFlights.get(ticketId);
-        chargeUpdate(flight.getPrice());
-        flights.updateSeats(flight, 1);
-        flights.removeHash(flight, users.getPassengerMap().get(userName + passWord));
-        userFlights.remove(ticketId);
+        chargeUpdate(tickets.ticketCancellation(ticketId));
     }
 
     private void bookedTickets() {
         System.out.println(cls);
         System.out.println("You booked this flight already :");
-        printFlights(userFlights);
-    }
+        tickets.userBooked(users.getPassengerMap().get(userName+passWord));
 
-    private void printFlights(HashMap<String, FlightsInfo> userFlights) {
-        FlightsInfo flight;
-        System.out.print("""
-                |FlightId  |Origin    |Destination  |Date      |Time |Price    |Seats |Ticket ID           |\s
-                ............................................................................................
-                """);
-        for (String ticketId : userFlights.keySet()) {
-            flight = userFlights.get(ticketId);
-            System.out.printf("|%10s|%10s|%13s|%10s|%5s|%9s|%6s|%20s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats(), ticketId);
-            System.out.println("............................................................................................");
-
-        }
     }
 
     private void bookTicket() {
         System.out.print(">pleas enter ID of flight you want to book :\t");
         String inputId = scanner.nextLine();
-        FlightsInfo flight = checkExist(inputId);
-        if (flight != null) {
-            if (checkCharge(flight)) {
-                booking(flight);
-                chargeUpdate(-(flight.getPrice()));
+        if (flights.checkExist(inputId)) {
+            if (checkCharge(flights.flightGetting(inputId))) {
+                booking(flights.flightGetting(inputId));
+                chargeUpdate(-(flights.flightGetting(inputId).getPrice()));
                 System.out.print(cls + "Booking done!");
             } else {
                 System.out.println("Your charge is not enough for booking this flight");
@@ -167,7 +228,8 @@ public class User {
 
     /**
      * check if charge of passenger enough for booking this flight
-     * @param flight for get tihs price
+     *
+     * @param flight for get its price
      * @return true or false mean the passenger can book or not
      */
     private boolean checkCharge(FlightsInfo flight) {
@@ -175,21 +237,11 @@ public class User {
     }
 
     private void booking(FlightsInfo flight) {
-        String ticketId = "WH" + Integer.toString(userFlights.size() + 1) + "-" + userName + "-" + flight.getFlightId();
-        userFlights.put(ticketId, flight);
+        tickets.addTicket(users.getPassengerMap().get(userName+passWord) ,flight);
         flights.updateSeats(flight, -1);
-        flights.addHash(flight, users.getPassengerMap().get(userName + passWord));
     }
 
-    private FlightsInfo checkExist(String inputId) {
-//        tempHashMap = flights.getIdKey();
-        temp = flights.getFlightsInfo();
-        for (FlightsInfo flight : temp) {
-            if (inputId.equals(flight.getFlightId()))
-                return flight;
-        }
-        return null;
-    }
+
 
     /**
      * give the extra charge that user want to charge and call the update function
@@ -197,7 +249,7 @@ public class User {
     public void addCharge() {
         System.out.printf("Your current charge :\t%10d\n", charge);
         System.out.print("How much do you want to charge?\t");
-        int extraCharge = Integer.valueOf(scanner.nextLine());
+        int extraCharge = Integer.parseInt(scanner.nextLine());
         chargeUpdate(extraCharge);
         System.out.println(cls);
         System.out.printf("Your charge has been updated :\t%10s", charge);
@@ -219,25 +271,9 @@ public class User {
      * @return true or false mean new pass is same or not
      */
     private boolean checkPass(String inputPass) {
-        if (passWord.equals(inputPass))
-            return true;
-        return false;
+        return passWord.equals(inputPass);
     }
 
-    /**
-     * change user password with check old password , get new password and update pass word
-     */
-    public void changePass() {
-        System.out.print("enter your current password :\t");
-        String temp = scanner.nextLine();
-        if (checkPass(temp)) {
-            System.out.print(cls + "New password :\t");
-            passWord = scanner.nextLine();
-            System.out.printf(cls + "\nYour password has been updated");
-        } else {
-            inputError();
-        }
-    }
 
     /**
      * this function print error input means user input is wrong and need try again
@@ -247,49 +283,6 @@ public class User {
         System.out.print("Incorrect input , try again!! \n\n");
     }
 
-    private void searchFlight() {
-        ArrayList<FlightsInfo> tempFlights = new ArrayList<>();
-        String index = "";
-        while (!index.equals("-1")) {
-            printFilterMenu();
-            index = scanner.nextLine();
-            System.out.println(cls);
-            index = checkFilterInput(index, tempFlights);
-        }
-        System.out.println(cls);
-
-    }
-
-    private String checkFilterInput(String index, ArrayList<FlightsInfo> tempFlights) {
-        String filterNameInput = null;
-        String[] times = new String[3];
-        switch (index) {
-            case "1", "2", "3", "6" -> {
-                System.out.print("\nSearcher word:\t");
-                filterNameInput = scanner.nextLine();
-            }
-            case "4" -> {
-                getDateFilter(times);
-                filterNameInput = times[2] + "-" + times[1] + "-" + times[0];
-            }
-            case "5" -> {
-                getTimeFilter(times);
-                filterNameInput = times[1] + ":" + times[0];
-            }
-            case "7" -> {
-                showResultOfSearch(tempFlights);
-                System.out.println("Enter to continue...");
-                scanner.nextLine();
-                return "-1";
-            }
-            default -> {
-                inputError();
-                return index;
-            }
-        }
-        flights.checkFlightObjects(index, filterNameInput, tempFlights);
-        return index;
-    }
 
     private void getTimeFilter(String[] times) {
         System.out.print("\nhour:\t");
@@ -310,50 +303,15 @@ public class User {
     }
 
 
-
-
-    private void showResultOfSearch(ArrayList<FlightsInfo> tempFlights) {
+    public void showResultOfSearch(ArrayList<FlightsInfo> tempFlights) {
         System.out.println(cls);
         System.out.println("The result of your filter:");
         if (tempFlights.isEmpty()) {
             System.out.println("There is no flight with this information!!");
 
         } else {
-            System.out.print("""
-                    |FlightId     |Origin    |Destination  |Date      |Time |Price    |Seats |
-                    ..........................................................................
-                    """);
-            for (FlightsInfo flight : tempFlights) {
-                System.out.printf("|%13s|%10s|%13s|%10s|%5s|%9s|%6s|\n", flight.getFlightId(), flight.getOrigin(), flight.getDestination(), flight.getDatePrinted(), flight.getTimePrinted(), flight.getPrice(), flight.getSeats());
-                System.out.println("..........................................................................");
-//            }
-            }
+            flights.showFlightSchedules(tempFlights);
         }
     }
 
-    private void printFilterMenu() {
-        System.out.print("""
-                Exert your filters ...
-                   
-                   1- Flight ID
-                   2- Origin
-                   3- Destination
-                   4- Date
-                   5- Time
-                   6- Price
-                   7- Show
-                """);
-    }
-
-
-    public void removeAdmin(FlightsInfo flight) {
-        if(userFlights.containsValue(flight)){
-            for (String kye : userFlights.keySet()){
-                if (userFlights.get(kye).equals(flight)){
-                    userFlights.remove(kye,flight);
-                    break;
-                }
-            }
-        }
-    }
 }

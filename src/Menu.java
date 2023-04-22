@@ -25,7 +25,7 @@ public class Menu {
         String input = "0";
         while (!input.equals("3")) {
             printMenu();
-            input = scanner.next();
+            input = scanner.nextLine();
             switch (input) {
                 case "1" -> signIn();
                 case "2" -> signUp();

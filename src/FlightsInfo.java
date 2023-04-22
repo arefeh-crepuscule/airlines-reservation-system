@@ -1,8 +1,6 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+
 
 public class FlightsInfo {
-    private HashMap<String , ArrayList<User>> map = new HashMap<>();
     private String flightId ;
     private String origin;
     private String destination;
@@ -28,8 +26,7 @@ public class FlightsInfo {
     }
 
     public void setFlightId() {
-        String flightId = origin.charAt(0) + destination.charAt(0) + "-" + Integer.toString(date[1]) + Integer.toString(date[0]) + "-" + Integer.toString(time[1]) + Integer.toString(time[0]);
-        this.flightId = flightId;
+        this.flightId = origin.charAt(0) + destination.charAt(0) + "-" + date[1] + date[0] + "-" + time[1] + time[0];
     }
 
     public String getOrigin() {
@@ -54,19 +51,15 @@ public class FlightsInfo {
 
     public void setDate(int[] date) {
         this.date = date;
-        datePrinted = Integer.toString(date[2])+"-"+Integer.toString(date[1])+"-"+Integer.toString(date[0]);
+        datePrinted = date[2] +"-"+ date[1] +"-"+ date[0];
     }
     public String getPricePrinted(){
         return Integer.toString(price);
     }
 
-    public int[] getTime() {
-        return time;
-    }
-
     public void setTime(int[] time) {
         this.time = time;
-        timePrinted = Integer.toString(time[1])+":"+Integer.toString(time[0]);
+        timePrinted = time[1] +":"+ time[0];
     }
 
     public int getPrice() {
@@ -84,9 +77,7 @@ public class FlightsInfo {
     public void setSeats(int seats) {
         this.seats = seats;
     }
-    public  void setTogether(){
 
-    }
 
 
 }
