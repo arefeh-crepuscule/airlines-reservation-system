@@ -9,9 +9,11 @@ public class PrimaryData {
     Random rand = new Random();
 
     public PrimaryData(){
-
     }
 
+    /**
+     * make 10 new flights as default
+     */
     public void makePrimaryFlights() {
         for (int i = 0; i < 10; i++) {
             FlightsInfo flight = new FlightsInfo();
@@ -25,11 +27,19 @@ public class PrimaryData {
         }
     }
 
+    /**
+     * set random price in flight's price parameter
+     * @param flight object that is making
+     */
     private void setPrice(FlightsInfo flight) {
         int []price = {1500000, 1400000,1700000,1100000,1350000,1240000,1432000,1640000,1030000,1090000,1300000};
         flight.setPrice(price[rand.nextInt(price.length)]);
     }
 
+    /**
+     * set random time in flight's time parameter
+     * @param flight object that is making
+     */
     private void setTime(FlightsInfo flight) {
         int [] time = new int[2];
         time[0]= rand.nextInt(59);
@@ -38,6 +48,10 @@ public class PrimaryData {
 
     }
 
+    /**
+     * set random date in flight's date parameter
+     * @param flight object that is making
+     */
     private void setDate(FlightsInfo flight) {
         int [] date=new int[3];
         date[0] = rand.nextInt(1,30);
@@ -46,6 +60,10 @@ public class PrimaryData {
         flight.setDate(date);
     }
 
+    /**
+     * set random city in flight's origin and destination parameter
+     * @param flight object that is making
+     */
     private void setCities(FlightsInfo flight) {
         String tempCity = city.get(rand.nextInt(city.size()));
         flight.setOrigin(tempCity);

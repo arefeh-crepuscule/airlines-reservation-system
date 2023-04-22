@@ -237,7 +237,7 @@ public class User {
     }
 
     private void booking(FlightsInfo flight) {
-        tickets.addTicket(users.getPassengerMap().get(userName+passWord) ,flight);
+        tickets.makeTicket(users.getPassengerMap().get(userName+passWord) ,flight);
         flights.updateSeats(flight, -1);
     }
 
